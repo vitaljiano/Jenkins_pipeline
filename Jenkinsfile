@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+
+	 stage('Checkout') {
+            steps {
+                checkout scm  // Отримує код з SCM (наприклад, GitHub)
+            }
+        }
+
         stage('Prepare') {
             steps {
                 script {
