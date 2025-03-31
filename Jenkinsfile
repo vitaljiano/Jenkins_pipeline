@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     echo 'Installing Node.js version 22'
-                    sh 'curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -'
+                    sh 'curl -fsSL https://deb.nodesource.com/setup_22.x | bash -'
                     sh 'apt-get install -y nodejs'
                     sh 'node -v'
                 }
