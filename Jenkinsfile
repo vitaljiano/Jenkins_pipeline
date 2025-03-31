@@ -5,12 +5,10 @@ pipeline {
         stage('Prepare') {
             steps {
                 script {
-                    echo 'Installing Node.js version 22'
-                    sh 'curl -fsSL https://deb.nodesource.com/setup_22.x | bash -'
-                    sh 'apt-get install -y nodejs'
-                    sh 'node -v'
-                }
-            }
+		echo 'Installing Node.js'
+                sh 'curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION.x | sudo -E bash -'
+                sh 'sudo apt-get install -y nodejs'
+                sh 'node -v'            }
         }
 
         stage('Build') {
