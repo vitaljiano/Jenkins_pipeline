@@ -1,31 +1,40 @@
 pipeline {
     agent any
+
+    environment {
+        NVM_DIR = "$HOME/.nvm"  // Define NVM directory globally
+    }
+
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-        
         stage('Prepare') {
             steps {
-                sh 'curl -fsSL https://deb.nodesource.com/setup_22.x | bash -'
-                sh 'apt-get update && apt-get install -y nodejs'
-                sh 'node --version && npm --version' // Перевіримо встановлення
+                echo 'Installing Node.js v22'
+                sh '''
+                    curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && nvm install 22
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm install' // Встановлюємо залежності
-                sh 'npm run build' // Запускаємо збірку
+                echo 'Show npm version'
+                sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+                    nvm use 22
+                    npm -v
+                '''
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test' // Запускаємо тести
-                echo "JENKINS_URL is: ${env.JENKINS_URL}"
+                echo 'Displaying Jenkins environment variable'
+                sh '''
+                    echo "JENKINS_URL=$JENKINS_URL"
+                '''
             }
         }
     }
