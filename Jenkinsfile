@@ -1,32 +1,31 @@
 pipeline {
     agent any
     stages {
-        
-        stage('Prepare') {
+        stage('Checkout') {
             steps {
-        script {
-            node {
                 checkout scm
             }
         }
-    }
+        
+        stage('Prepare') {
             steps {
-                sh 'curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -'
-                sh 'sudo apt install -y nodejs'
+                sh 'curl -fsSL https://deb.nodesource.com/setup_22.x | bash -'
+                sh 'apt-get update && apt-get install -y nodejs'
+                sh 'node --version && npm --version' // Перевіримо встановлення
             }
         }
+
         stage('Build') {
             steps {
-                script {
-                    sh 'npm --version'
-                }
+                sh 'npm install' // Встановлюємо залежності
+                sh 'npm run build' // Запускаємо збірку
             }
         }
+
         stage('Test') {
             steps {
-                script {
-                    echo "JENKINS_URL is: ${env.JENKINS_URL}"
-                }
+                sh 'npm test' // Запускаємо тести
+                echo "JENKINS_URL is: ${env.JENKINS_URL}"
             }
         }
     }
